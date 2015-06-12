@@ -1,0 +1,179 @@
+<!--
+@license
+Copyright (c) 2015 Dean Wagner. All rights reserved.
+-->
+<!-- <link rel="import" href="../polymer/polymer.html"> -->
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <web-client></web-client>
+
+@demo
+-->
+<dom-module id="web-client">
+
+  <style>
+    :host {
+      display: block;
+    }
+
+    .nav {
+      border-right: 1px solid var(--drawer-border-color);
+    }
+
+    .main {
+      background-color: var(--primary-background-color);
+    }
+
+    paper-toolbar {
+      background-color: var(--dark-primary-color);
+    }
+  </style>
+
+    <template>
+    <iron-media-query query="(max-width: 410px)" query-matches="{{isPhone}}"></iron-media-query>
+    <paper-dialog id="loadMsg">
+      <p>{{dialogMsg}}</p>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+      </div>
+    </paper-dialog>
+    <content select="dataadapter"></content>
+    <paper-drawer-panel id="drawerPanel" responsive-width="1280px">
+
+      <div class="nav" drawer>
+        <!-- Nav Content -->
+        <!-- Drawer Toolbar -->
+        <paper-toolbar id="drawerToolbar">
+          <span>Menu</span>
+        </paper-toolbar>
+
+        <!-- Drawer Content -->
+        <paper-menu class="list" attr-for-selected="pagename" selected="{{menuSelection}}">
+          <content select=".menuitems"></content>
+        </paper-menu>
+      </div>
+
+      <paper-header-panel class="main" main mode="waterfall">
+
+
+        <!-- Main Toolbar -->
+        <paper-toolbar>
+          <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+
+          <!-- Application name -->
+          <div class="appname">{{apptitle}}</div>
+          <span class="flex"></span>
+
+          <!-- Toolbar icons -->
+          <paper-icon-button icon="info" on-tap="getHelp"></paper-icon-button>
+        </paper-toolbar>
+
+
+
+        <!-- Main Content -->
+        <div class="content">
+
+          <iron-pages 
+              attr-for-selected="pagename" 
+              selected="{{contentPage}}"
+              selected-item="{{selItem}}">
+            
+            <content select=".menupages"></content>
+
+          </iron-pages>
+
+        </div>
+
+      </paper-header-panel>
+
+    </paper-drawer-panel>
+
+  </template>
+
+</dom-module>
+<script>
+
+
+      Polymer({
+        is: 'web-client',
+
+        properties: {
+          isPhone: {
+            type: Boolean
+          },
+          dialogMsg: {
+            type: String,
+            value: "Welcome to the Machine."
+          },
+          menuSelection: {
+            type: String,
+            value: "home",
+            observer: 'devicePageSelector'
+          },
+          contentPage: {
+            type: String,
+            observer: 'swapContent'
+          },
+          apptitle: {
+            type: String,
+            value: "Application Title"
+          },
+          oldSelItem: Object,
+          selItem: Object
+        },
+
+        devicePageSelector: function () {
+          console.log("in devicePageSelector");
+          if (this.isPhone) {
+            this.contentPage = "m-" + this.menuSelection;
+          } else {
+            this.contentPage = this.menuSelection;
+          }
+          this.$.drawerPanel.closeDrawer();
+        },
+
+        swapContent: function () {
+          if (this.oldSelItem == undefined) {
+            console.log("no oldSelItem");
+            this.oldSelItem = this.selItem;
+          }
+          this.oldSelItem.shutDown();
+          this.selItem.setUp();
+        },
+
+        ready: function () {
+          this.addEventListener('setapptitle', function (e) {
+            console.log("setting title to " + e.detail.title);
+            this.apptitle = e.detail.title;
+          });
+          this.addEventListener('openMsg', function (e) {
+            console.log("opening the loadMsg dialog");
+            this.dialogMsg = e.detail.msg;
+            this.$.loadMsg.open();
+          });
+          this.addEventListener('closeMsg', function (e) {
+            console.log("closing the loadMsg dialog");
+            this.dialogMsg = "";
+            this.$.loadMsg.close();
+          });
+          console.log("web-client, after add event listener");
+          this.devicePageSelector();
+        },
+
+        getHelp: function () {
+          this.selItem.helpMe();
+        },
+
+        showMsg: function () {
+          this.$.loadMsg.open();
+        }
+
+
+      });
+    
+
+</script>

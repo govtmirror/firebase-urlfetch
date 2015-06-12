@@ -1,0 +1,14 @@
+application: seed
+module: module
+version: v0-1-2
+runtime: python27
+instance_class: F4
+threadsafe: true
+api_version: 1
+
+handlers:
+- url: /static
+  static_dir: static
+
+- url: .*
+  script: main.app
