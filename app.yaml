@@ -1,6 +1,6 @@
 application: seed
 module: module
-version: v0-1-2
+version: v0-0-0
 runtime: python27
 instance_class: F4
 threadsafe: true

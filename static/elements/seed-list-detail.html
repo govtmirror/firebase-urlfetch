@@ -41,6 +41,10 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
         display: none;
       }
 
+      iron-list {
+        height: 150px;
+      }
+
 /*      .content {
         height: 3000px;
       }*/
@@ -72,13 +76,29 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
           </paper-toolbar>
 
           <!-- List -->
-          <paper-menu class="list" 
+          <!-- <paper-menu class="list" 
               on-iron-activate="_listTap" 
               selected="{{selectedindex}}">
             <template is="dom-repeat" items="{{dataitems}}">
               <paper-item>{{item.name}}</paper-item>
             </template>
-          </paper-menu>
+          </paper-menu> -->
+
+
+          <iron-list items="[[dataitems]]" as="item">
+            <template>
+              <div on-tap="listtap">
+                Name: <span>[[item.name]]</span>
+                index: <span>{{index}}</span>
+              </div>
+            </template>
+          </iron-list>
+
+
+
+
+
+
 
         </paper-header-panel>
 
@@ -162,6 +182,11 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
         },
         newt: Object,
         oldt: Object
+      },
+
+      listtap: function () {
+        alert("yeah, " + "9");
+        selectedindex = 3;
       },
 
       _selectedIndexChanged: function(newIndex, oldIndex) {
