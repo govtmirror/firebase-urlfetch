@@ -76,34 +76,16 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
           </paper-toolbar>
 
           <!-- List -->
-          <!-- <paper-menu class="list" 
-              on-iron-activate="_listTap" 
-              selected="{{selectedindex}}">
-            <template is="dom-repeat" items="{{dataitems}}">
-              <paper-item>{{item.name}}</paper-item>
-            </template>
-          </paper-menu> -->
 
-
-          <!-- <iron-list items="[[dataitems]]" as="item">
+          <iron-list items="[[dataitems]]" as="item">
             <template>
-              <div on-tap="listtap">
+              <!-- declaring the event inside the template adds a 'model' to the event -->
+              <div on-tap="itemtap">
                 Name: <span>[[item.name]]</span>
                 index: <span>{{index}}</span>
               </div>
             </template>
-          </iron-list> -->
-          <iron-list items="[[dataitems]]" as="item">
-            <template>
-            <seed-item index="{{index}}" name1="{{item.name}}"></seed-item>
-            </template>
           </iron-list>
-
-
-
-
-
-
 
         </paper-header-panel>
 
@@ -189,10 +171,11 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
         oldt: Object
       },
 
-      listtap: function (e) {
-        alert("yeah, " + "9");
-        this.selectedindex = 3;
-        alert(e.target.item.name);
+      itemtap: function (e) {
+        var model = e.model;
+        alert("yeah, " + model.item.name);
+        this.selectedindex = model.index;
+        alert(model.index);
       },
 
       _selectedIndexChanged: function(newIndex, oldIndex) {
