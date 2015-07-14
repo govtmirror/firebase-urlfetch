@@ -1,0 +1,36 @@
+<!--
+@license
+Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
+-->
+
+<dom-module id="seed-item">
+	<style>
+		.listitem {
+			padding: 10px;
+		}
+	</style>
+	<template>
+		<div class="listitem">
+			Name: <span>{{name1}}</span>
+			index: <span>{{index}}</span>
+		</div>
+	</template>
+</dom-module>
+
+<script>
+  (function() {
+    Polymer({
+      is: 'seed-item',
+      properties: {
+      	name1: String,
+      	index: Number
+      },
+      listeners: {
+        'tap': 'itemtap'
+      },
+      itemtap: function () {
+      	alert(this.name1 + " " + this.index);
+      }
+	});
+  })();
+</script>

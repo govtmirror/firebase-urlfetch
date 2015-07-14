@@ -85,12 +85,17 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
           </paper-menu> -->
 
 
-          <iron-list items="[[dataitems]]" as="item">
+          <!-- <iron-list items="[[dataitems]]" as="item">
             <template>
               <div on-tap="listtap">
                 Name: <span>[[item.name]]</span>
                 index: <span>{{index}}</span>
               </div>
+            </template>
+          </iron-list> -->
+          <iron-list items="[[dataitems]]" as="item">
+            <template>
+            <seed-item index="{{index}}" name1="{{item.name}}"></seed-item>
             </template>
           </iron-list>
 
@@ -184,9 +189,10 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
         oldt: Object
       },
 
-      listtap: function () {
+      listtap: function (e) {
         alert("yeah, " + "9");
-        selectedindex = 3;
+        this.selectedindex = 3;
+        alert(e.target.item.name);
       },
 
       _selectedIndexChanged: function(newIndex, oldIndex) {
