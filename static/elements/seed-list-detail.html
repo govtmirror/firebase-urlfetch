@@ -176,6 +176,7 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
         alert("yeah, " + model.item.name);
         this.selectedindex = model.index;
         alert(model.index);
+        this.$.mainDrawerPanel.closeDrawer();
       },
 
       _selectedIndexChanged: function(newIndex, oldIndex) {
