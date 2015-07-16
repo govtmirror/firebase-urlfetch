@@ -45,6 +45,15 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
         height: 150px;
       }
 
+      .caseitem {
+        padding: 5px;
+      }
+      .caseselected {
+        background-color: gray;
+        font-size: 1.25em;
+        color: white;
+      }
+
 /*      .content {
         height: 3000px;
       }*/
@@ -80,7 +89,7 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
           <iron-list items="[[dataitems]]" as="item">
             <template>
               <!-- declaring the event inside the template adds a 'model' to the event -->
-              <div on-tap="itemtap">
+              <div on-tap="itemtap" class="caseitem">
                 Name: <span>[[item.name]]</span>
                 index: <span>{{index}}</span>
               </div>
@@ -173,9 +182,14 @@ Copyright (c) 2015 Dean Wagner (wagner@nmb.gov). All rights reserved.
 
       itemtap: function (e) {
         var model = e.model;
-        alert("yeah, " + model.item.name);
         this.selectedindex = model.index;
-        alert(model.index);
+        try {
+          this.toggleClass('caseselected', false, this.$$('.caseselected'));
+        } 
+        catch(err) {
+          console.log("no caseselected");
+        }
+        this.toggleClass('caseselected', true, e.target);
         this.$.mainDrawerPanel.closeDrawer();
       },
 
