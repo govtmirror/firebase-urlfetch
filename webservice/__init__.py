@@ -2,6 +2,7 @@
 # import userservice as us
 import obligationservice as ob
 import casexservice as am
+import fireservice as fire
 from webapp2_extras.routes import RedirectRoute
 import logging
 
@@ -10,6 +11,7 @@ _routes = [
 		# RedirectRoute('/user/<ckfield>/<ckvalue>', us.UserHandler),	
 		# RedirectRoute('/user', us.UserHandler),	
 		RedirectRoute('/bfscsv', ob.BfscsvHandler),	
+		RedirectRoute('/fire', fire.TestHandler),
 		RedirectRoute('/postbfs', ob.BfspostHandler),
 		RedirectRoute('/bfsentries', ob.BfsentriesHandler),		
 		RedirectRoute('/arbcases', am.ArbcaseHandler)

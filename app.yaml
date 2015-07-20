@@ -1,5 +1,5 @@
-application: seed
-module: module
+application: firebase-1012
+module: default
 version: v0-0-0
 runtime: python27
 instance_class: F4
