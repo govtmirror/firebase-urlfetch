@@ -3,8 +3,6 @@ from webapp2_extras import json
 import logging
 from google.appengine.api import datastore
 from google.appengine.ext import ndb
-from dbentities import *
-from nmbauthenticator import *
 from datetime import datetime
 from google.appengine.api import urlfetch
 

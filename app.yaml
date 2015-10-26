@@ -1,14 +1,12 @@
 application: firebase-1012
 module: default
-version: v0-0-0
+version: v1-0-0
 runtime: python27
 instance_class: F4
 threadsafe: true
 api_version: 1
 
 handlers:
-- url: /static
-  static_dir: static
 
 - url: .*
   script: main.app
