@@ -6,6 +6,8 @@ import logging
 
 _routes = [
 		RedirectRoute('/mail', fire.TestHandler),
+		RedirectRoute('/worker', fire.TestMailer),
+		RedirectRoute('/wtf', fire.TestMailer2)
 		]
 
 def add_routes(app):

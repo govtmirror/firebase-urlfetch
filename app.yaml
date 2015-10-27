@@ -10,3 +10,7 @@ handlers:
 
 - url: .*
   script: main.app
+
+
+env_variables:
+  FIREBASE_DB: 'https://nmbdean.firebaseio.com'
