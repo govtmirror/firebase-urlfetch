@@ -1,0 +1,24 @@
+The Request for Work has been approved as noted below by the NMB Arbitration Department
+Director. You may work as authorized for the month of.
+
+YOUR PAY VOUCHER, FOR THIS MONTH MUST BE SUBMITTED TO FINANCE AND ADMINISTRATION BY THE 10TH
+DAY OF THE MONTH FOLLOWING THE ONE BEING SCHEDULED. IF NOT SUBMITTED BY THIS DATE, THE MONEY
+WILL BE DE‐OBLIGATED.
+{% autoescape on %}
+Arbitrator: {{ nameyo|safe }}
+ArbMonth:  
+{% endautoescape %}
+Writing Cases:
+
+
+Hearing Cases:
+
+
+Travel:
+
+Comment Log:
+
+Status: 
+
+Do not reply to this email. Forward it with comment to 
+

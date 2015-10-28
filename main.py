@@ -17,54 +17,95 @@ class HomeHandler(webapp2.RequestHandler):
 		INDEX_HTML = open('client.html').read()
 		self.response.out.write(INDEX_HTML)
 
-class TestHandler(webapp2.RequestHandler):
+class MailHandler(webapp2.RequestHandler):
 	def get(self):
 		logging.info("<<<<<<<<   GET, in TestHandler   >>>>>>>>")
 		url = os.environ['FIREBASE_DB'] + "/email.json"
 		result = urlfetch.fetch(url)
-		logging.info("ZZqqZZZ   3 " + result.content)
+		# logging.info("ZZqqZZZ   3 " + result.content)
 		emailDict = json.decode(result.content)
 		emailKeys = emailDict.keys()
 		for a in emailKeys:
-			logging.info("hello yo 3, " + emailDict[a]['type'])
-			mydata = emailDict[a]['type']
-			taskqueue.add(url='/worker', params={'key': a})
+			if emailDict[a]['pending'] == True:
+				logging.info("hello yo 3, " + emailDict[a]['type'])
+				yotype = emailDict[a]['type']
+				yoarbmonthid = emailDict[a]['arbMonthID']
+				yoarbuid = emailDict[a]['arbuid']
+				yostamp = emailDict[a]['stamp']
+				yoparams = {
+					'arbMonthID': yoarbmonthid,
+					'arbuid': yoarbuid,
+					'stamp': yostamp,
+					'type': yotype
+				}
+				taskurl = "/" + yotype
+				taskqueue.add(url=taskurl, params=yoparams)
+				params = '{"pending": false}'
+				url2 = os.environ['FIREBASE_DB'] + "/email/" + a + "/.json"
+				result = urlfetch.fetch(url=url2,
+					payload=params,
+					method=urlfetch.PATCH)
+				logging.info("post result 2 = " + str(result.status_code))
+			else:
+				logging.info("not a pending email")
 
-			params = '{"pending": "false","whatever": "no"}'
-			# putData = urllib.urlencode(params)
-			url2 = os.environ['FIREBASE_DB'] + "/email/" + a + "/.json"
-			result = urlfetch.fetch(url=url2,
-				payload=params,
-				method=urlfetch.PATCH)
-			logging.info("post result = " + str(result.status_code))
-
-class TestMailer(webapp2.RequestHandler):
+class ReqAppMailer(webapp2.RequestHandler):
 	def post(self):
-		logging.info("i am in the testmailer")
-		mydata = self.request.get('key')
+		logging.info("i am in the reqappmailer")
+		mydata = self.request.get('stamp')
+		mytype = self.request.get('type')
+		myarbMonthID = self.request.get('arbMonthID')
+		myarbuid = self.request.get('arbuid')
+		# user_address = "wagner@nmb.gov"
+		sender_address = "montague@nmb.gov"
+
+
+		url9 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/correspondEmail.json"
+		userResult = urlfetch.fetch(url9)
+		user_address = userResult.content
+
+		url99 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/name.json"
+		userNameResult = urlfetch.fetch(url99)
+		user_name = userNameResult.content
+		
+		# logging.info("ZZZZZZZZZ  1 " + str(userObject))
+		# emailKeys = emailDict.keys()
+		# user_address = userObject.correspondEmail
+		# user_name = userObject.nameyo
+
+
+
+		subject = mytype+ ", " + mydata
+		template_values = {'nameyo': user_name}
+		template_url = "email-templates/" + mytype 
+		body = template.render(template_url, template_values)
+
+		mail.send_mail(sender_address, user_address, subject, body)
+		logging.info("i am leaving the reqappmailer")
+
+class RptAppMailer(webapp2.RequestHandler):
+	def post(self):
+		logging.info("i am in the rptappmailer")
+		mydata = self.request.get('stamp')
+		mytype = self.request.get('type')
 		user_address = "wagner@nmb.gov"
 		sender_address = "montague@nmb.gov"
-		subject = "Confirm " + mydata
-		body = """Thank you for creating an account! Please confirm your email address by clicking on the link below"""
-		mail.send_mail(sender_address, user_address, subject, body)
-		logging.info("i am leaving the testmailer")
+		subject = mytype+ ", " + mydata
 
-class TestMailer2(webapp2.RequestHandler):
-	def post(self):
-		logging.info("i am in the testmailer2")
-		user_address = "wagner@nmb.gov"
-		sender_address = "firebase-1012@appspot.gserviceaccount.com"
-		subject = "Confirm it" 
-		body = """Thank you for creating an account! Please confirm your email address byclicking on the link below"""
+		template_values = {'nameyo': 'Dean'}
+		template_url = "email-templates/" + mytype 
+		body = template.render(template_url, template_values)
+
 		mail.send_mail(sender_address, user_address, subject, body)
-		logging.info("i am leaving the testmailer2")
+		logging.info("i am leaving the rptappmailer")
+
 
 
 app = webapp2.WSGIApplication(
 	[
 	('/', HomeHandler),
-	('/mail', TestHandler),
-	('/worker', TestMailer),
-	('/wtf', TestMailer2)
+	('/mail', MailHandler),
+	('/approve-request', ReqAppMailer),
+	('/approved-report', RptAppMailer),
 	],
 	debug=True)

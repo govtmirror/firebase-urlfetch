@@ -1,4 +1,1 @@
 cron:
-- description: two minutes mail cron
-  url: /mail
-  schedule: every 2 mins
