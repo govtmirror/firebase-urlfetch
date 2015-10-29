@@ -57,12 +57,43 @@ class ReqAppMailer(webapp2.RequestHandler):
 		myarbMonthID = self.request.get('arbMonthID')
 		myarbuid = self.request.get('arbuid')
 		# user_address = "wagner@nmb.gov"
-		sender_address = "montague@nmb.gov"
+		sender_address = os.environ['SYSTEM_EMAIL']
 
 
 		url9 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/correspondEmail.json"
 		userResult = urlfetch.fetch(url9)
 		user_address = userResult.content
+
+		if mytype == 'SUBMITTED_REQ':
+			to_address = user_address +", " + os.environ['ARBITRATION_EMAIL']
+			the_subject = "Request Submission Confirmation"
+		elif mytype == 'return-request-to-arb':
+			to_address = user_address +", " + os.environ['ARBITRATION_EMAIL']
+			the_subject = "Submission Return"
+		elif mytype == 'validate-request':
+			to_address = os.environ['ARBITRATION_EMAIL']
+			the_subject = "Submission Validation"
+		elif mytype == 'return-request-to-rev':
+			to_address = os.environ['ARBITRATION_EMAIL']
+			the_subject = "Return to Staff"
+		elif mytype == 'approve-request':
+			to_address = user_address +", " + os.environ['ARBITRATION_EMAIL'] + ", " + os.environ['ADMIN_EMAIL']
+			the_subject = "Request Approval"
+		elif mytype == 'SUBMITTED_RPT':
+			to_address = user_address +", " + os.environ['ARBITRATION_EMAIL']
+			the_subject = "Report Submission Confirmation"
+		elif mytype == 'return-report-to-arb':
+			to_address = user_address +", " + os.environ['ARBITRATION_EMAIL']
+			the_subject = "Report Submission Return"
+		elif mytype == 'validate-report':
+			to_address = os.environ['ARBITRATION_EMAIL']
+			the_subject = "Report Validation"
+		elif mytype == 'approve-report':
+			to_address = user_address +", " + os.environ['ARBITRATION_EMAIL'] + ", " + os.environ['ADMIN_EMAIL']
+			the_subject = "Report Approval"
+		else:
+			to_address = os.environ['ARBITRATION_EMAIL']
+			the_subject = "Return to Staff"
 
 		url99 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/name.json"
 		userNameResult = urlfetch.fetch(url99)
@@ -149,15 +180,16 @@ class ReqAppMailer(webapp2.RequestHandler):
 			'writings': writeArray
 		}
 
-		logging.info("this is very important, " + str(hearArray))
+		# logging.info("this is very important, " + str(hearArray))
 
 
-		subject = mytype+ ", 3 " + mydata
+
+		# subject = mytype+ ", 3 " + mydata
 		
 		template_url = "email-templates/" + mytype 
 		body = template.render(template_url, template_values)
 
-		mail.send_mail(sender_address, user_address, subject, body)
+		mail.send_mail(sender_address, to_address, the_subject, body)
 		logging.info("i am leaving the reqappmailer")
 
 

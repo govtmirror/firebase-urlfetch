@@ -1,23 +1,18 @@
-The Request for Work has been approved as noted below by the NMB Arbitration Department
-Director. You may work as authorized for the month of.
+The Report for Work has been approved as noted below by the NMB Arbitration Department
+Director.
 
-YOUR PAY VOUCHER, FOR THIS MONTH MUST BE SUBMITTED TO FINANCE AND ADMINISTRATION BY THE 10TH
-DAY OF THE MONTH FOLLOWING THE ONE BEING SCHEDULED. IF NOT SUBMITTED BY THIS DATE, THE MONEY
-WILL BE DE‐OBLIGATED.
-{% autoescape on %}
 Arbitrator: {{ nameyo|safe }}
 ArbMonth:  {{ arbmonth.arbMonthID }}
-{% endautoescape %}
-Writing Cases:
 
-
-Hearing Cases 2:
-
-<ul>
-{% for h in hearings %}
-    <li>{{ h.a }}</li>
+cases written:
+{% for w in writings %}
+    {{ w.caseID }}, {{w.dateAssigned}}, {{ w.written }}, {{ w.fee }}, {{ w.notwritten }}
 {% endfor %}
-</ul>
+
+cases heard:
+{% for h in hearings %}
+    {{ h.caseID }}, {{h.dateAssigned}}, {{ h.tripID }}, {{ h.heard }}, {{ h.hfee }}, {{ h.notheard }}
+{% endfor %}
 
 
 

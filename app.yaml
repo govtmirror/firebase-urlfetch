@@ -14,3 +14,6 @@ handlers:
 
 env_variables:
   FIREBASE_DB: 'https://nmbdean.firebaseio.com'
+  ADMIN_EMAIL: 'montague@nmb.gov'
+  ARBITRATION_EMAIL: 'montague@nmb.gov'
+  SYSTEM_EMAIL: 'montague@nmb.gov'
