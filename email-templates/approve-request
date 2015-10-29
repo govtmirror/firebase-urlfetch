@@ -6,7 +6,7 @@ DAY OF THE MONTH FOLLOWING THE ONE BEING SCHEDULED. IF NOT SUBMITTED BY THIS DAT
 WILL BE DE‐OBLIGATED.
 {% autoescape on %}
 Arbitrator: {{ nameyo|safe }}
-ArbMonth:  
+ArbMonth:  {{ arbmonth.arbMonthID }}
 {% endautoescape %}
 Writing Cases:
 

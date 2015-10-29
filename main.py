@@ -67,6 +67,12 @@ class ReqAppMailer(webapp2.RequestHandler):
 		url99 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/name.json"
 		userNameResult = urlfetch.fetch(url99)
 		user_name = userNameResult.content
+
+		url3 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/arbmonths/" + myarbMonthID + ".json"
+		amResult = urlfetch.fetch(url3)
+		am = amResult.content
+		logging.info("??????????   " + am)
+		amDict = json.decode(am)
 		
 
 		url999 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/assignments.json"
@@ -81,34 +87,37 @@ class ReqAppMailer(webapp2.RequestHandler):
 			logging.info("one more key, " + a)
 			logging.info("hearsched, " + str(assignmentsDict[a]))
 			if 'hearsched' in assignmentsDict[a]:
-				logging.info("more hearsched, " + assignmentsDict[a]['hearsched'])
+				if myarbMonthID == assignmentsDict[a]['hearsched']:
+					logging.info("more hearsched, " + assignmentsDict[a]['hearsched'])
+					hearArray.append(assignmentsDict[a]['hearsched'])
+			else:
+				logging.info("no hearsched, " + assignmentsDict[a]['caseID'])
+			if 'writesched' in assignmentsDict[a]:
+				if myarbMonthID == assignmentsDict[a]['writesched']:
+					logging.info("more writesched, " + assignmentsDict[a]['writesched'])
+					writeArray.append(assignmentsDict[a]['writesched'])
+			else:
+				logging.info("no writesched, " + assignmentsDict[a]['caseID'])
 
+		template_values = {
+			'nameyo': user_name,
+			'arbmonth': amDict,
+			'hearings': hearArray,
+			'writings': writeArray
+		}
 
+		logging.info("this is very important, " + str(amDict))
 
 
 		subject = mytype+ ", " + mydata
-		template_values = {'nameyo': user_name}
+		
 		template_url = "email-templates/" + mytype 
 		body = template.render(template_url, template_values)
 
 		mail.send_mail(sender_address, user_address, subject, body)
 		logging.info("i am leaving the reqappmailer")
 
-class RptAppMailer(webapp2.RequestHandler):
-	def post(self):
-		logging.info("i am in the rptappmailer")
-		mydata = self.request.get('stamp')
-		mytype = self.request.get('type')
-		user_address = "wagner@nmb.gov"
-		sender_address = "montague@nmb.gov"
-		subject = mytype+ ", " + mydata
 
-		template_values = {'nameyo': 'Dean'}
-		template_url = "email-templates/" + mytype 
-		body = template.render(template_url, template_values)
-
-		mail.send_mail(sender_address, user_address, subject, body)
-		logging.info("i am leaving the rptappmailer")
 
 
 
@@ -116,7 +125,6 @@ app = webapp2.WSGIApplication(
 	[
 	('/', HomeHandler),
 	('/mail', MailHandler),
-	('/approve-request', ReqAppMailer),
-	('/approved-report', RptAppMailer),
+	('/approve-request', ReqAppMailer)
 	],
 	debug=True)
