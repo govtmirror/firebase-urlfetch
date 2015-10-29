@@ -68,10 +68,20 @@ class ReqAppMailer(webapp2.RequestHandler):
 		userNameResult = urlfetch.fetch(url99)
 		user_name = userNameResult.content
 		
-		# logging.info("ZZZZZZZZZ  1 " + str(userObject))
-		# emailKeys = emailDict.keys()
-		# user_address = userObject.correspondEmail
-		# user_name = userObject.nameyo
+
+		url999 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/assignments.json"
+		assignmentResult = urlfetch.fetch(url999)
+		assignments = assignmentResult.content
+		logging.info("ZZZZZZZZZ  1 " + assignments)
+		assignmentsDict = json.decode(assignments)
+		assignmentsKeys = assignmentsDict.keys()
+		writeArray = []
+		hearArray = []
+		for a in assignmentsKeys:
+			logging.info("one more key, " + a)
+			logging.info("hearsched, " + str(assignmentsDict[a]))
+			logging.info("more hearsched, " + assignmentsDict[a].hearsched)
+
 
 
 
