@@ -80,7 +80,8 @@ class ReqAppMailer(webapp2.RequestHandler):
 		for a in assignmentsKeys:
 			logging.info("one more key, " + a)
 			logging.info("hearsched, " + str(assignmentsDict[a]))
-			logging.info("more hearsched, " + assignmentsDict[a].hearsched)
+			if 'hearsched' in assignmentsDict[a]:
+				logging.info("more hearsched, " + assignmentsDict[a]['hearsched'])
 
 
 

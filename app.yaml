@@ -1,4 +1,6 @@
+application: deep-castle-94318
 module: default
+version: v2
 runtime: python27
 instance_class: F4
 threadsafe: true
