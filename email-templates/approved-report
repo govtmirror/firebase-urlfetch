@@ -2,14 +2,18 @@ The Report for Work has been approved as noted below by the NMB Arbitration Depa
 Director. .
 
 
-Arbitrator: 
-ArbMonth: 
+Arbitrator: {{ nameyo|safe }}
+ArbMonth:  {{ arbmonth.arbMonthID }}
 
 cases written:
+{% for w in writings %}
+    {{ w.caseID }}, {{w.dateAssigned}}, {{ w.written }}, {{ w.fee }}, {{ w.notwritten }}
+{% endfor %}
 
-
-cases hear:
-
+cases heard:
+{% for h in hearings %}
+    {{ h.caseID }}, {{h.dateAssigned}}, {{ h.tripID }}, {{ h.heard }}, {{ h.hfee }}, {{ h.notheard }}
+{% endfor %}
 
 comment log:
 

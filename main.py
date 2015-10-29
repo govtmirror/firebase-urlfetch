@@ -38,7 +38,7 @@ class MailHandler(webapp2.RequestHandler):
 					'stamp': yostamp,
 					'type': yotype
 				}
-				taskurl = "/" + yotype
+				taskurl = "/writemail"
 				taskqueue.add(url=taskurl, params=yoparams)
 				params = '{"pending": false}'
 				url2 = os.environ['FIREBASE_DB'] + "/email/" + a + "/.json"
@@ -71,31 +71,74 @@ class ReqAppMailer(webapp2.RequestHandler):
 		url3 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/arbmonths/" + myarbMonthID + ".json"
 		amResult = urlfetch.fetch(url3)
 		am = amResult.content
-		logging.info("??????????   " + am)
+		# logging.info("??????????   " + am)
 		amDict = json.decode(am)
 		
 
 		url999 = os.environ['FIREBASE_DB'] + "/users/" + myarbuid + "/assignments.json"
 		assignmentResult = urlfetch.fetch(url999)
 		assignments = assignmentResult.content
-		logging.info("ZZZZZZZZZ  1 " + assignments)
+		# logging.info("ZZZZZZZZZ  1 " + assignments)
 		assignmentsDict = json.decode(assignments)
 		assignmentsKeys = assignmentsDict.keys()
 		writeArray = []
 		hearArray = []
 		for a in assignmentsKeys:
-			logging.info("one more key, " + a)
-			logging.info("hearsched, " + str(assignmentsDict[a]))
+			# logging.info("one more key, " + a)
+			# logging.info("hearsched, " + str(assignmentsDict[a]))
 			if 'hearsched' in assignmentsDict[a]:
 				if myarbMonthID == assignmentsDict[a]['hearsched']:
-					logging.info("more hearsched, " + assignmentsDict[a]['hearsched'])
-					hearArray.append(assignmentsDict[a]['hearsched'])
+					if 'tripID' in assignmentsDict[a]:
+						thistripID = assignmentsDict[a]['tripID']
+					else:
+						thistripID = "no trip"
+					if 'heard' in assignmentsDict[a]:
+						thisheard = assignmentsDict[a]['heard']
+					else:
+						thisheard = "n/a"
+					if 'hfee' in assignmentsDict[a]:
+						thishfee = assignmentsDict[a]['hfee']
+					else:
+						thishfee = "30"
+					if 'notheard' in assignmentsDict[a]:
+						thisnotheard = assignmentsDict[a]['notheard']
+					else:
+						thisnotheard = " - "
+
+					# logging.info("more hearsched, " + assignmentsDict[a]['hearsched'])
+					hearArray.append({
+						"caseID":assignmentsDict[a]['caseID'],
+						"dateAssigned":assignmentsDict[a]['dateAssigned'],
+						"notheard":thisnotheard,
+						"tripID":thistripID,
+						"heard":thisheard,
+						"hfee":thishfee
+					})
 			else:
 				logging.info("no hearsched, " + assignmentsDict[a]['caseID'])
 			if 'writesched' in assignmentsDict[a]:
 				if myarbMonthID == assignmentsDict[a]['writesched']:
-					logging.info("more writesched, " + assignmentsDict[a]['writesched'])
-					writeArray.append(assignmentsDict[a]['writesched'])
+					if 'written' in assignmentsDict[a]:
+						thiswritten = assignmentsDict[a]['written']
+					else:
+						thiswritten = "n/a"
+					if 'fee' in assignmentsDict[a]:
+						thisfee = assignmentsDict[a]['fee']
+					else:
+						thisfee = "30"
+					if 'notwritten' in assignmentsDict[a]:
+						thisnotwritten = assignmentsDict[a]['notwritten']
+					else:
+						thisnotwritten = " - "
+
+					# logging.info("more hearsched, " + assignmentsDict[a]['hearsched'])
+					writeArray.append({
+						"caseID":assignmentsDict[a]['caseID'],
+						"dateAssigned":assignmentsDict[a]['dateAssigned'],
+						"notwritten":thisnotwritten,
+						"written":thiswritten,
+						"fee":thisfee
+					})
 			else:
 				logging.info("no writesched, " + assignmentsDict[a]['caseID'])
 
@@ -106,10 +149,10 @@ class ReqAppMailer(webapp2.RequestHandler):
 			'writings': writeArray
 		}
 
-		logging.info("this is very important, " + str(amDict))
+		logging.info("this is very important, " + str(hearArray))
 
 
-		subject = mytype+ ", " + mydata
+		subject = mytype+ ", 3 " + mydata
 		
 		template_url = "email-templates/" + mytype 
 		body = template.render(template_url, template_values)
@@ -125,6 +168,6 @@ app = webapp2.WSGIApplication(
 	[
 	('/', HomeHandler),
 	('/mail', MailHandler),
-	('/approve-request', ReqAppMailer)
+	('/writemail', ReqAppMailer)
 	],
 	debug=True)
